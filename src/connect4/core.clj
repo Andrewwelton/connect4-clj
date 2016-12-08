@@ -6,6 +6,7 @@
 (declare privmsgHandler)
 (declare printControls)
 (declare receiveAcceptChallenge)
+(declare receivePlayCommand)
 
 (def validCharacters
   (map char (concat 
@@ -80,6 +81,30 @@
   (if (= (get collection :text) (str "ACCEPT_CHALLENGE:" (get @game :my-challenge-id)))
     (receiveAcceptChallenge)
   )
+  (if (boolean (re-find #"PLAY:" (get collection :text)))
+    (receivePlayCommand (str/split (get collection :text) #":"))
+  )
+)
+
+(defn receivePlayCommand
+  "Handles receiving a play command"
+  [command]
+  (prn (get @game :my-turn))
+  (prn (get @game :game-in-progress))
+  (if (and (= (get @game :my-turn) 0) (= (get @game :game-in-progress) 1))
+    (do
+      (let [board (get @game :board)]
+        (swap! game assoc-in [:board] (insert board (Integer. (get command 1)) 2))
+      )
+      (swap! game
+        (fn [current-state]
+          (merge-with + current-state {:my-turn 1})
+        )
+      )
+      (print-board (get @game :board))
+    )
+
+  )
 )
 
 (defn receiveAcceptChallenge
@@ -106,18 +131,13 @@
       (println "Enter your move:")
       (let [rawCommand (Integer. (read-line))]
         (do
-          (swap! game
-            (fn [current-state]
-              (let [board (get @game :board)]
-                (merge-with + current-state {:my-turn 0})
-              )
-            )
-          )
+          (swap! game assoc :my-turn 0)
           (let [board (get @game :board)]
             (swap! game assoc-in [:board] (insert board (dec rawCommand) 1))
           )
+          (println @game)
         )
-        (println (get @game :board))
+        (irc/message connection "#andrewircschooltest" (str "PLAY:" (dec rawCommand)))        
       )
     )
     (println "It is not your turn!")
