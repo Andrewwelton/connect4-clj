@@ -1,36 +1,20 @@
 # connect4
 
-FIXME: description
+This is a connect 4 game written in Clojure.
+It communicates and plays via an IRC connection. Requires someone either on IRC feeding correct responses, or another bot from this project.
 
-## Installation
+Handles V1 of the protocol.
 
-Download from http://example.com/FIXME.
+Coded for CIS 4910 - Functional Programming @ University of Guelph.
 
 ## Usage
 
-FIXME: explanation
-
-    $ java -jar connect4-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
+Your best bet is to just run this through Leiningen
 
 ### Bugs
 
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
+Have to manually accept or decline a win from opponent. Something odd happens when trying to do this automagically from the IRC callback.
 
 ## License
 
-Copyright © 2016 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Feel free to use this as you see fit. Realize this was a University project and if you blatantly copy this for an assignment of your own, I am not responsible for anything that happens to you.
